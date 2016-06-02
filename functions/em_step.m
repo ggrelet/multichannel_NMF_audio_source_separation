@@ -5,7 +5,7 @@ function [A_new,W_new,H_new,s,sigb_new] =em_step(x,A,W,H,sigb)
 % Une interation de EM
 [I,F,N]=size(x); % Nombre de chaines*nombre de frÃ©quence*nombre de tps
 [~,J,~]=size(A); % Nombre d'instruments
-K_partition=[5 5 5 5];
+K_partition=[5 5 5];
 K_cumsum = cumsum(K_partition);
 K=sum(K_partition);
 s= zeros(J,F,N);
@@ -52,9 +52,10 @@ for f=1:F
     %% Mstep
     temp=Rxs/Rss;
     A_new(:,:,f)=temp;
-    sigb_new(:,:,f)=diag(Rxx-temp*Rxs'-Rxs*temp+temp*Rss*temp');%% WTF scalaire ?
+  
+    sigb_new(:,:,f)=diag(Rxx-temp*Rxs'-Rxs*temp'+temp*Rss*temp');%% WTF scalaire ?
     for k=1:K
-        W_new(f,k)=sum(u(k,f,:)./h(k,:))/N;
+        W_new(f,k)=sum(u(k,f,:)./H(k,:))/N;
     end
     
 end
@@ -72,7 +73,7 @@ for f=1:F
       D(j,j,f)=sqrt(sum(abs(A_new(:,j,f).^2)))*exp(1i*arg(A_new(1,j,f))); 
    end
    A_new(:,:,f)=A_new(:,:,f)/D(:,:,f); 
-   % on a ainsi la sommes sur i  A_ij,f = 1 et A_1j réel > 0 
+   % on a ainsi la sommes sur i  A_ij,f = 1 et A_1j rï¿½el > 0 
 end
 % Finir la normalisation
 
