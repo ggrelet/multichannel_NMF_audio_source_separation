@@ -81,11 +81,12 @@ for j=1:J
     cardkj=ind(j+1)-ind(j);
     lambda=zeros(cardkj,carkj);
     % Attention W deux dim pas une
-    W(ind(j):ind(j+1))=diag(abs(D(j,j,:)).^2)*W(ind(j):ind(j+1));
+    W(:,ind(j):ind(j+1))=diag(abs(D(j,j,:)).^2)*W(ind(j):ind(j+1));
     for k=ind(j):ind(j+1)
        lambda(k-ind(j)+1,k-ind(j)+1)=sum(W(:,k)); 
     end
-    W(ind(j):ind(j+1))=W(ind(j):ind(j+1))*lambda;
+    W(:,ind(j):ind(j+1))=W(:,ind(j):ind(j+1))*lambda;
+    H(ind(j):ind(j+1),:)=lambda*H(ind(j):ind(j+1),:);
     % multiplier J_j par lambda
 end
 
