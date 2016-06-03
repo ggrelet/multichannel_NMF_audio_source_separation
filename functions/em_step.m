@@ -38,7 +38,7 @@ for f=1:F
         end
         
         sigx=A(:,:,f)*sigs*A(:,:,f)'+sigb(f);
-        sigc=diag(W(f,:)*H(:,n));
+        sigc=diag(diag(W(f,:)*H(:,n)));
         Gs=sigs*A(:,:,f)'/(sigx);
         Gc=sigc*A_ronde'/sigx;
         s(:,f,n)=Gs*x(:,f,n);
@@ -53,7 +53,7 @@ for f=1:F
     temp=Rxs/Rss;
     A_new(:,:,f)=temp;
   
-    sigb_new(:,:,f)=diag(Rxx-temp*Rxs'-Rxs*temp'+temp*Rss*temp');%% WTF scalaire ?
+    sigb_new(:,:,f)=diag(diag(Rxx-temp*Rxs'-Rxs*temp'+temp*Rss*temp')); % WTF scalaire ?
     for k=1:K
         W_new(f,k)=sum(u(k,f,:)./H(k,:))/N;
     end

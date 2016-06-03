@@ -1,3 +1,5 @@
+%% Mixture script
+
 close all
 clear all
 
@@ -24,3 +26,17 @@ voice_mixed = mix(voice, 3);
 
 fmix = piano_mixed + drum_mixed + voice_mixed; % Filtered mix
 omix = piano + drum + voice; % Original mix
+
+
+%% testEm_step script
+
+I=2;
+F=1024;
+N=1024;
+J=4; %nombre de sources
+x=zeros(I,F,N); % spectrogramme du signal recu
+K=15;
+W=zeros(F,K); % NMF estimee de x
+H=zeros(K,N); % idem
+sigb=zeros(I); %bruit sur les différentes chaines
+em_step(x,A,W,H,sigb)

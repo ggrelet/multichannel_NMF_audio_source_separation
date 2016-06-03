@@ -3,6 +3,7 @@ function [X] = spec(vector, window_length, overlap)
 %   vector : input x vector
 %   window_length : size of the sine-window, typically 1024 samples
 %   overlap : overlapping coefficient, typically 50%
+%   OUTPUT : 
 
 vector_length = size(vector(:, 1), 1); % Size of the input vector (the sound)
 
