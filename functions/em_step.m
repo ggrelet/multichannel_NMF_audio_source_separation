@@ -37,7 +37,7 @@ for f=1:F
             end
         end
         
-        sigx=A(:,:,f)*sigs*A(:,:,f)'+sigb(f);
+        sigx=A(:,:,f)*sigs*A(:,:,f)'+sigb(:,:,f);
         sigc=diag(diag(W(f,:)*H(:,n)));
         Gs=sigs*A(:,:,f)'/(sigx);
         Gc=sigc*A_ronde'/sigx;
@@ -52,45 +52,41 @@ for f=1:F
     %% Mstep
     temp=Rxs/Rss;
     A_new(:,:,f)=temp;
-  
-    sigb_new(:,:,f)=diag(diag(Rxx-temp*Rxs'-Rxs*temp'+temp*Rss*temp')); % WTF scalaire ?
+    
+    sigb_new(:,:,f)=diag(diag(Rxx-temp*Rxs'-Rxs*temp'+temp*Rss*temp'));
     for k=1:K
-        W_new(f,k)=sum(u(k,f,:)./H(k,:))/N;
+        W_new(f,k)=sum(squeeze(u(k,f,:)).'./H(k,:))/N;
     end
     
 end
 for n=1:N
-    for k=1:K      
-        H_new(k,n)=sum(u(k,:,n)./W_new(:,k))/F;
+    for k=1:K
+        H_new(k,n)=sum(squeeze(u(k,:,n)).'./W_new(:,k))/F;
     end
 end
 
 %% Normalization of A_new W_new and H_new
 D=zeros(J,J,F);
 for f=1:F
-   
-   for j=1:J
-      D(j,j,f)=sqrt(sum(abs(A_new(:,j,f).^2)))*exp(1i*arg(A_new(1,j,f))); 
-   end
-   A_new(:,:,f)=A_new(:,:,f)/D(:,:,f); 
-   % on a ainsi la sommes sur i  A_ij,f = 1 et A_1j reel > 0 
+    
+    for j=1:J
+        D(j,j,f)=sqrt(sum(abs(A_new(:,j,f).^2)))*exp(1i*angle(A_new(1,j,f)));
+    end
+    A_new(:,:,f)=A_new(:,:,f)/D(:,:,f);
+    % on a ainsi la sommes sur i  A_ij,f = 1 et A_1j reel > 0
 end
-ind=[1 cumsum(K)]; %indices des H_j et K_j
-
+ind=[1 K_cumsum]; %indices des H_j et K_j
 for j=1:J
-    cardkj=ind(j+1)-ind(j);
-    lambda=zeros(cardkj,carkj);
+    cardKj=ind(j+1)-ind(j);
+    lambda=zeros(cardKj,cardKj);
     % Attention W deux dim pas une
-    W(:,ind(j):ind(j+1))=diag(abs(D(j,j,:)).^2)*W(ind(j):ind(j+1));
+    W(:,ind(j):ind(j+1))=diag(abs(squeeze(D(j,j,:))).^2)*W(:,ind(j):ind(j+1));
     for k=ind(j):ind(j+1)
-       lambda(k-ind(j)+1,k-ind(j)+1)=sum(W(:,k)); 
+        lambda(k-ind(j)+1,k-ind(j)+1)=sum(W(:,k));
     end
     W(:,ind(j):ind(j+1))=W(:,ind(j):ind(j+1))*lambda;
     H(ind(j):ind(j+1),:)=lambda*H(ind(j):ind(j+1),:);
     % multiplier J_j par lambda
 end
-
-
-
 
 end
