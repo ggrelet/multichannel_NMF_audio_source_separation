@@ -8,7 +8,7 @@ function [X] = spec(vector, window_length, overlap)
 vector_length = size(vector(:, 1), 1); % Size of the input vector (the sound)
 
 w = zeros(window_length, 1); % Window vector
-X = zeros(window_length, ceil(vector_length/window_length/overlap), 2); 
+X = zeros(window_length, ceil(vector_length/window_length/overlap) - 2, 2); 
 
 for k=1:window_length
     w(k) = sin((pi * k)/(window_length - 1)); % Sine-window calculation
