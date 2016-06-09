@@ -25,8 +25,6 @@ J=3; % number of instrument
 I=2; % stereo
 %% Initialisation de l'algo
 
-%% Algo sur critère d'arret 
-
 for j=1:J
     [W,H]=nmf_initialization()
 end
