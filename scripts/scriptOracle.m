@@ -24,3 +24,4 @@ X=spec(fmix,1024,0.5);
 %% Initialisation de l'algo
 
 %% Algo sur critère d'arret 
+

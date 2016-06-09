@@ -6,7 +6,7 @@ function [X] = spec(vector, window_length, overlap)
 %   OUTPUT : X dim I*F*N 
 
 vector_length = size(vector(:, 1), 1); % Size of the input vector (the sound)
-I=size(vector(1,:),1);
+I = size(vector(1,:),1);
 
 w = zeros(window_length, 1); % Window vector
 
