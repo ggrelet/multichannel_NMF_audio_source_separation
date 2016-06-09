@@ -1,4 +1,4 @@
-function [A_new,W_new,H_new,s,sigb_new] =em_step(x,A,W,H,sigb,K_partition)
+function [A_new,W_new,H_new,s,sigb_new] = em_step(x,A,W,H,sigb,K_partition)
 
 
 %%
