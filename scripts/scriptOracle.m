@@ -51,9 +51,9 @@ end
 %% Algo sur critère d'arret 
 [A_est, W_est, H_est, s_est, sigb] = em_step(X, A, W, H, sigb, K_partition);
 pause()
-arret = 1;
-while(arret)
-    s_temp = s(1,:,:) + s(2,:,:) + s(3,:,:);
-    [A_est, W_est, H_est, s_est, sigb] = em_step(x, A, W, H, sigb, K_partition);
-    arret = norm(abs(s_step- ( s(1,:,:) + s(2,:,:) + s(3,:,:)))) > 10^-7;
-end
+% arret = 1;
+% while(arret)
+%     s_temp = s(1,:,:) + s(2,:,:) + s(3,:,:);
+%     [A_est, W_est, H_est, s_est, sigb] = em_step(x, A, W, H, sigb, K_partition);
+%     arret = norm(abs(s_step- ( s(1,:,:) + s(2,:,:) + s(3,:,:)))) > 10^-7;
+% end

@@ -14,16 +14,16 @@ H = rand(order, s2);
 Wdiff = 1;
 Hdiff = 1;
 compteur=1;
-while Hdiff > stop && Wdiff > stop
-    compteur=compteur+1
+while (Hdiff > stop && Wdiff > stop) || compteur>1000
+    compteur=compteur+1;
     H1 = H;
     W1 = W;
 
     H = H.*(W'*((W*H).^(betaparam-2).*V))./(W'*(W*H).^(betaparam-1));
     W = W.*(((W*H).^(betaparam-2).*V)*H')./((W*H).^(betaparam-1)*H');
     
-    Hdiff = norm(H1-H)
-    Wdiff = norm(W1-W)
+    Hdiff = norm(H1-H);
+    Wdiff = norm(W1-W);
 end
 end
 
