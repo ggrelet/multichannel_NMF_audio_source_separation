@@ -1,6 +1,6 @@
 function [W, H] = nmf_initialization(V, betaparam, stop)
 %NMF_INITIALIZATION Summary of this function goes here
-%   V : input matrix
+%   V : input matrix 
 %   betaparam : as it is called in the algorithm
 %   stop : stop parameter
 %   OUTPUT W and H matrix
