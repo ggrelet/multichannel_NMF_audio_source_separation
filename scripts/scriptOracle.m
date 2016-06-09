@@ -7,7 +7,9 @@ close all
 [piano, Fp] = audioread('sources/piano.wav');
 [voice, Fv] = audioread('sources/voice.wav');
 load('sources/mixing_filters_ozerov.mat');
-
+drum=drum(:,1);
+piano=piano(:,1);
+voice=voice(:,1);
 
 %% Convolutive mixing
 % from mixin_filter_ozerov.mat
@@ -23,11 +25,18 @@ X=spec(fmix,1024,0.5);
 %% Parameter definition
 J=3; % number of instrument
 I=2; % stereo
+K_param=[5,5,5];
+betaparam=2;
+stop=10^-7;
 %% Initialisation de l'algo
+[W,H]=nmf_initialization(piano,betaparam,stop);
+[W_temp,H_temp]=nmf_initialization(drum,betaparam,stop);
+W=[W W_temp];
+H=[H;H_temp];
+[W_temp,H_temp]=nmf_initialization(voice,betaparam,stop);
+W=[W W_temp];
+H=[H;H_temp];
 
-for j=1:J
-    [W,H]=nmf_initialization()
-end
 
 %% Algo sur critère d'arret 
 [A, W, H, s, sigb] = em_step(x, A, W, H, sigb, K_partition);

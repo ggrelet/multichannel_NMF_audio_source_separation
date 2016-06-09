@@ -6,7 +6,7 @@ load('sources/mixing_filters_ozerov.mat'); %Ozerov's values
 vect1 = squeeze(A(1,i,:));
 vect2 = squeeze(A(2,i,:));
 
-output = [filter(vect1, 1, squeeze(source(:, 1))) filter(vect2, 1, squeeze(source(:, 1)))];
+output = [filter(vect1, 1, squeeze(source)) filter(vect2, 1, squeeze(source))];
 
 end
 
