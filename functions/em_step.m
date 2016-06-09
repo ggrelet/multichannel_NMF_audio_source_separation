@@ -1,11 +1,13 @@
-function [A_new,W_new,H_new,s,sigb_new] =em_step(x,A,W,H,sigb)
+function [A_new,W_new,H_new,s,sigb_new] =em_step(x,A,W,H,sigb,K_partition)
 
 
 %%
 % Une interation de EM
 [I,F,N]=size(x); % Nombre de chaines*nombre de fréquence*nombre de tps
 [~,J,~]=size(A); % Nombre d'instruments
-K_partition=[5 5 5];
+if J~=size(K_partition,1)
+    error('Attention K_partition n''a pas J elements')
+end
 K_cumsum = cumsum(K_partition);
 K=sum(K_partition);
 s= zeros(J,F,N);
