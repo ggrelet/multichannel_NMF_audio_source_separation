@@ -87,7 +87,7 @@ for j=1:J
     for k=ind(j):ind(j+1)
         lambda(k-ind(j)+1,k-ind(j)+1)=sum(W(:,k));
     end
-    W(:,ind(j):ind(j+1))=W(:,ind(j):ind(j+1))*lambda;
+    W(:,ind(j):ind(j+1))=W(:,ind(j):ind(j+1))/lambda;
     H(ind(j):ind(j+1),:)=lambda*H(ind(j):ind(j+1),:);
     % multiplier J_j par lambda
 end
