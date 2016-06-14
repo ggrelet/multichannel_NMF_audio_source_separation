@@ -17,13 +17,12 @@ sigb_new = zeros(size(sigb));
 u=zeros(K,F,N);
 H_new=zeros(size(H));
 W_new=zeros(size(W));
-
+sigx=zeros(I,I,F,N);
 for f=1:F
-    f
     Rxx=zeros(I,I);
     Rxs=zeros(I,J);
     Rss=zeros(J,J);
-    u=zeros(K,N);
+    %u=zeros(K,N);
     %% E step
     for n=1:N
         
@@ -40,17 +39,21 @@ for f=1:F
             end
         end
         
-        sigx=A(:,:,f)*sigs*A(:,:,f)'+sigb(:,:,f);
+        sigx(:,:,f,n)=A(:,:,f)*sigs*A(:,:,f)'+sigb(:,:,f);
         sigc=diag(diag(W(f,:)*H(:,n)));
-        Gs=sigs*A(:,:,f)'/(sigx);
-        Gc=sigc*A_ronde'/sigx;
+        Gs=sigs*A(:,:,f)'/(sigx(:,:,f,n));
+        Gc=sigc*A_ronde'/sigx(:,:,f,n);
         s(:,f,n)=Gs*x(:,f,n);
         c(:,f,n)=Gc*x(:,f,n);
         Rxx(:,:)=Rxx(:,:)+x(:,f,n)*x(:,f,n)'/N;
         Rxs(:,:)=Rxs(:,:)+x(:,f,n)*s(:,f,n)'/N;
         Rss(:,:)=Rss(:,:)+(s(:,f,n)*s(:,f,n)'+sigs-Gs*A(:,:,f)*sigs)/N;
         u(:,f,n)=diag(c(:,f,n)*c(:,f,n)'+sigc-Gc*A_ronde*sigc);
-        
+        for k=1:K
+           if(u(k,f,n)<0)
+               error('error')
+           end
+        end
     end
     %% Mstep
     temp=Rxs/Rss;
@@ -82,14 +85,22 @@ ind=[1 K_cumsum]; %indices des H_j et K_j
 for j=1:J
     cardKj=ind(j+1)-ind(j);
     lambda=zeros(cardKj,cardKj);
-    % Attention W deux dim pas une
     W(:,ind(j):ind(j+1))=diag(abs(squeeze(D(j,j,:))).^2)*W(:,ind(j):ind(j+1));
-    for k=ind(j):ind(j+1)
+    for k=ind(j):ind(j+1)-1
         lambda(k-ind(j)+1,k-ind(j)+1)=sum(W(:,k));
     end
-    W(:,ind(j):ind(j+1))=W(:,ind(j):ind(j+1))/lambda;
-    H(ind(j):ind(j+1),:)=lambda*H(ind(j):ind(j+1),:);
-    % multiplier J_j par lambda
+    W(:,ind(j):ind(j+1)-1)=W(:,ind(j):ind(j+1)-1)/lambda;
+    H(ind(j):ind(j+1)-1,:)=lambda*H(ind(j):ind(j+1)-1,:);
 end
 
+%% Calcul du critere v
+v=0;
+for n=1:N
+    for f=1:F
+        real(det(sigx(:,:,f,n)))
+        log(real(det(sigx(:,:,f,n))))
+        v=v+trace((x(:,f,n)*x(:,f,n)')/sigx(:,:,f,n))+log(real(det(sigx(:,:,f,n))));
+    end
+end
+v;
 end
