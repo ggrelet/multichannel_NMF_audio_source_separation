@@ -92,7 +92,7 @@ end
 v=0;
 for n=1:N
     for f=1:F
-        v=v+trace((x(:,f,n)*x(:,f,n)')/sigx(:,:,f,n))+log(real(det(sigx(:,:,f,n))));
+        v=v+trace((x(:,f,n)*x(:,f,n)')/sigx(:,:,f,n))+log((det(sigx(:,:,f,n))));
     end
 end
 criterion=v;
