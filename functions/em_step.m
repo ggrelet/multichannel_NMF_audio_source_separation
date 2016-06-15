@@ -55,14 +55,16 @@ for f=1:F
     A_new(:,:,f)=temp;
     
     sigb_new(:,:,f)=diag(diag(Rxx-temp*Rxs'-Rxs*temp'+temp*Rss*temp'));
+    u_temp=squeeze(u(:,f,:));
     for k=1:K
-        W_new(f,k)=sum(squeeze(u(k,f,:)).'./H(k,:))/N;
+        W_new(f,k)=sum(u_temp(k,:)./H(k,:))/N;
     end
     
 end
-for n=1:N
-    for k=1:K
-        H_new(k,n)=sum(squeeze(u(k,:,n)).'./W_new(:,k))/F;
+for k=1:K
+    u_temp=squeeze(u(k,:,:));
+    for n=1:N
+        H_new(k,n)=sum(u_temp(:,n)./W_new(:,k))/F;
     end
 end
 
