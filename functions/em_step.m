@@ -1,4 +1,4 @@
-function [A_new,W_new,H_new,s,sigb_new] = em_step(x,A,W,H,sigb,K_partition)
+function [A_new,W_new,H_new,s,sigb_new,criterion] = em_step(x,A,W,H,sigb,K_partition)
 
 
 %%
@@ -12,7 +12,7 @@ K_cumsum = cumsum(K_partition);
 ind=[0 K_cumsum]; %indices des H_j et K_j
 K=sum(K_partition);
 s= zeros(J,F,N);
-c= zeros(K,F,N); %% Pas sur
+c= zeros(K,F,N);
 A_new = zeros(size(A));
 sigb_new = zeros(size(sigb));
 u=zeros(K,F,N);
@@ -29,16 +29,8 @@ for f=1:F
         
         
         sigs=zeros(J);
-        cpt=1;
         A_ronde=zeros(I,K);
         
-%         for k=1:K % Calculs concernant les partition de [1,K]
-%             sigs(cpt,cpt)=sigs(cpt,cpt)+W(f,k)*H(k,n);
-%             A_ronde(:,k)=A(:,cpt,f);
-%             if k==K_cumsum(cpt)
-%                 cpt=cpt+1;
-%             end
-%         end
         
         for j=1:J
            sigs(j,j)=W(f,ind(j)+1:ind(j+1))*...
@@ -47,20 +39,16 @@ for f=1:F
            A_ronde(:,ind(j)+1:ind(j+1))=repmat(A(:,j,f),1,K_partition(j));
         end
         sigx(:,:,f,n)=A(:,:,f)*sigs*A(:,:,f)'+sigb(:,:,f);
-        sigc=diag(diag(W(f,:)*H(:,n)));
+        sigc=(diag(W(f,:).*H(:,n).'));
         Gs=sigs*A(:,:,f)'/(sigx(:,:,f,n));
         Gc=sigc*A_ronde'/sigx(:,:,f,n);
         s(:,f,n)=Gs*x(:,f,n);
         c(:,f,n)=Gc*x(:,f,n);
-        Rxx(:,:)=Rxx(:,:)+x(:,f,n)*x(:,f,n)'/N;
-        Rxs(:,:)=Rxs(:,:)+x(:,f,n)*s(:,f,n)'/N;
-        Rss(:,:)=Rss(:,:)+(s(:,f,n)*s(:,f,n)'+sigs-Gs*A(:,:,f)*sigs)/N;
+        Rxx=Rxx+x(:,f,n)*x(:,f,n)'/N;
+        Rxs=Rxs+x(:,f,n)*s(:,f,n)'/N;
+        Rss=Rss+(s(:,f,n)*s(:,f,n)'+sigs-Gs*A(:,:,f)*sigs)/N;
         u(:,f,n)=diag(c(:,f,n)*c(:,f,n)'+sigc-Gc*A_ronde*sigc);
-%         for k=1:K
-%            if(u(k,f,n)<0)
-%                error('error')
-%            end
-%         end
+
     end
     %% Mstep
     temp=Rxs/Rss;
@@ -104,10 +92,8 @@ end
 v=0;
 for n=1:N
     for f=1:F
-        real(det(sigx(:,:,f,n)))
-        log(real(det(sigx(:,:,f,n))))
         v=v+trace((x(:,f,n)*x(:,f,n)')/sigx(:,:,f,n))+log(real(det(sigx(:,:,f,n))));
     end
 end
-v;
+criterion=v;
 end
