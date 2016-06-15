@@ -1,27 +1,32 @@
-clear all
-close all
+%% SCRIPT DE TEST DE LA FONCTION EM_STEP
+% Cette fonction teste l'algorithme EM avec des valeurs simples et courtes.
+% Son temps de réponse est de quelques secondes là où il aurait fallu
+% plusieures minutes sur les signaux drum, piano et voice.
+% La première étape fixe les paramètres tandis que la seconde lance
+% l'algorithme à proprement parler.
 %% Parametres
 
-I=2; % nombre de chaines
+I=2; % Nombre de chaines
 F=16;
-N=20;
-J=3; %nombre de sources
+N=50; % Nombre de points et donc d'itérations de l'algorithmes
+J=3; % Nombre de sources
 K_partition=[5 4 5];
 K=sum(K_partition);
-x=randn(I,F,N); % spectrogramme du signal
+x=randn(I,F,N); % Spectrogramme du signal
 A=randn(I,J,F); % Filtre qui fait le mixage
 
-W=rand(F,K);
-H=rand(K,N);
+W=rand(F,K); % Les matrices doivent être positives pour que l'algorithme fonctionne
+H=rand(K,N); 
+
 sigb=zeros(I,I,F);
 for f=1:F
     sigb(:,:,f)=0.001*eye(I);    
 end
 
-%% Test
-N=50;
 re=zeros(1,N);
 im=re;
+
+%% Test
 for i=1:N
    [A_new,W_new,H_new,~,sigb_new,criterion]=em_step(x,A,W,H,sigb,K_partition);
    A=A_new;
@@ -31,11 +36,25 @@ for i=1:N
    im(i)=imag(criterion);
    sigb=sigb_new;
 end
+
+%% Résultats
+% Les résultats suivants nous montrent plusieures choses.
+% La première est que même si elle est très petite, le critère possède une
+% partie imaginaire non nulle. La seconde est que la partie réelle, qui
+% consiste en la majeure partie du résultat, converge bien vers 0. Enfin,
+% le résultat affiché res nous indique que cette décroissance ce fait de
+% manière strictement monotone.
+close all
 figure
+hold on
 subplot(2,1,1)
 plot(re)
+title('Partie réelle')
 subplot(2,1,2)
-plot(im)
+plot(im, 'r')
+title('Partie imaginaire')
+hold off
 
 d=diff(re);
-sum(d>0)
+res = sum(d>0);
+display(res);
