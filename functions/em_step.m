@@ -9,6 +9,7 @@ if J~=size(K_partition,2)
     error('Attention K_partition n''a pas J elements')
 end
 K_cumsum = cumsum(K_partition);
+ind=[0 K_cumsum]; %indices des H_j et K_j
 K=sum(K_partition);
 s= zeros(J,F,N);
 c= zeros(K,F,N); %% Pas sur
@@ -31,14 +32,20 @@ for f=1:F
         cpt=1;
         A_ronde=zeros(I,K);
         
-        for k=1:K % Calculs concernant les partition de [1,K]
-            sigs(cpt,cpt)=sigs(cpt,cpt)+W(f,k)*H(k,n);
-            A_ronde(:,k)=A(:,cpt,f);
-            if k==K_cumsum(cpt)
-                cpt=cpt+1;
-            end
-        end
+%         for k=1:K % Calculs concernant les partition de [1,K]
+%             sigs(cpt,cpt)=sigs(cpt,cpt)+W(f,k)*H(k,n);
+%             A_ronde(:,k)=A(:,cpt,f);
+%             if k==K_cumsum(cpt)
+%                 cpt=cpt+1;
+%             end
+%         end
         
+        for j=1:J
+           sigs(j,j)=W(f,ind(j)+1:ind(j+1))*...
+               H(ind(j)+1:ind(j+1),n);
+           
+           A_ronde(:,ind(j)+1:ind(j+1))=repmat(A(:,j,f),1,K_partition(j));
+        end
         sigx(:,:,f,n)=A(:,:,f)*sigs*A(:,:,f)'+sigb(:,:,f);
         sigc=diag(diag(W(f,:)*H(:,n)));
         Gs=sigs*A(:,:,f)'/(sigx(:,:,f,n));
@@ -49,11 +56,11 @@ for f=1:F
         Rxs(:,:)=Rxs(:,:)+x(:,f,n)*s(:,f,n)'/N;
         Rss(:,:)=Rss(:,:)+(s(:,f,n)*s(:,f,n)'+sigs-Gs*A(:,:,f)*sigs)/N;
         u(:,f,n)=diag(c(:,f,n)*c(:,f,n)'+sigc-Gc*A_ronde*sigc);
-        for k=1:K
-           if(u(k,f,n)<0)
-               error('error')
-           end
-        end
+%         for k=1:K
+%            if(u(k,f,n)<0)
+%                error('error')
+%            end
+%         end
     end
     %% Mstep
     temp=Rxs/Rss;
@@ -81,16 +88,16 @@ for f=1:F
     A_new(:,:,f)=A_new(:,:,f)/D(:,:,f);
     % on a ainsi la sommes sur i  A_ij,f = 1 et A_1j reel > 0
 end
-ind=[1 K_cumsum]; %indices des H_j et K_j
+
 for j=1:J
-    cardKj=ind(j+1)-ind(j);
-    lambda=zeros(cardKj,cardKj);
-    W(:,ind(j):ind(j+1))=diag(abs(squeeze(D(j,j,:))).^2)*W(:,ind(j):ind(j+1));
-    for k=ind(j):ind(j+1)-1
-        lambda(k-ind(j)+1,k-ind(j)+1)=sum(W(:,k));
+    
+    lambda=zeros(K_partition(j));
+    W(:,ind(j)+1:ind(j+1))=diag(abs(squeeze(D(j,j,:))).^2)*W(:,ind(j)+1:ind(j+1));
+    for k=ind(j)+1:ind(j+1)
+        lambda(k-ind(j),k-ind(j))=sum(W(:,k));
     end
-    W(:,ind(j):ind(j+1)-1)=W(:,ind(j):ind(j+1)-1)/lambda;
-    H(ind(j):ind(j+1)-1,:)=lambda*H(ind(j):ind(j+1)-1,:);
+    W(:,ind(j)+1:ind(j+1))=W(:,ind(j)+1:ind(j+1))/lambda;
+    H(ind(j)+1:ind(j+1),:)=lambda*H(ind(j)+1:ind(j+1),:);
 end
 
 %% Calcul du critere v
