@@ -40,9 +40,8 @@ end
 %% Résultats
 % Les résultats suivants nous montrent plusieures choses.
 % La première est que même si elle est très petite, le critère possède une
-% partie imaginaire non nulle. La seconde est que la partie réelle, qui
-% consiste en la majeure partie du résultat, converge bien vers 0. Enfin,
-% le résultat affiché res nous indique que cette décroissance ce fait de
+% partie imaginaire non nulle. La seconde est que la partie réelle est bien décroissante. Enfin,
+% le résultat affiché res nous indique que cette décroissance se fait de
 % manière strictement monotone.
 close all
 figure
