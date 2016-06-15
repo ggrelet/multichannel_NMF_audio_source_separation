@@ -19,25 +19,25 @@ u=zeros(K,F,N);
 H_new=zeros(size(H));
 W_new=zeros(size(W));
 sigx=zeros(I,I,F,N);
+
 for f=1:F
+    
     Rxx=zeros(I,I);
     Rxs=zeros(I,J);
     Rss=zeros(J,J);
-    %u=zeros(K,N);
+    
     %% E step
     for n=1:N
-        
-        
+              
         sigs=zeros(J);
-        A_ronde=zeros(I,K);
-        
-        
+        A_ronde=zeros(I,K);      
         for j=1:J
            sigs(j,j)=W(f,ind(j)+1:ind(j+1))*...
                H(ind(j)+1:ind(j+1),n);
            
-           A_ronde(:,ind(j)+1:ind(j+1))=repmat(A(:,j,f),1,K_partition(j));
+           A_ronde(:,ind(j)+1:ind(j+1))=A(:,j,f)*ones(1,K_partition(j));
         end
+        
         sigx(:,:,f,n)=A(:,:,f)*sigs*A(:,:,f)'+sigb(:,:,f);
         sigc=(diag(W(f,:).*H(:,n).'));
         Gs=sigs*A(:,:,f)'/(sigx(:,:,f,n));
