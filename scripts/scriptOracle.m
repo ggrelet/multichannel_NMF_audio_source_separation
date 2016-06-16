@@ -7,9 +7,9 @@ close all
 [piano, Fp] = audioread('sources/piano.wav');
 [voice, Fv] = audioread('sources/voice.wav');
 load('sources/mixing_filters_ozerov.mat');
-drum=drum(:,1);
-piano=piano(:,1);
-voice=voice(:,1);
+drum=drum(1:2*Fd,1); % 2 premieres secondes
+piano=piano(1:2*Fp,1); % idem
+voice=voice(1:2*Fv,1); % 2 premieres secondes
 
 %% Convolutive mixing
 % from mixin_filter_ozerov.mat
@@ -27,12 +27,14 @@ betaparam=2;
 stop=0.1;
 %% Spectrogram
 X=spec_cube(fmix,1024,0.5);
+X=X(:,1:512,:); % On ne prend pas en compte les hte frequences
 F=size(X,2);
 N=size(X,3);
 s=zeros(J,F,N);
 s(1,:,:)=spec(piano,1024,0.5);
 s(2,:,:)=spec(drum,1024,0.5);
 s(3,:,:)=spec(voice,1024,0.5);
+s=s(:,1:512,:);
 
 %% Initialisation de l'algo
 W=[];
