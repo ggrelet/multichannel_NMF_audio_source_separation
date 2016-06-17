@@ -37,6 +37,7 @@ for f=1:F
         sigs=zeros(J);
            
         for j=1:J
+            %          sigs(j,:)=W(f,ind(j)+1:ind(j+1)) * H(ind(j)+1:ind(j+1),:);
            sigs(j,j)=W(f,ind(j)+1:ind(j+1))*...
                H(ind(j)+1:ind(j+1),n);
         end
@@ -46,7 +47,8 @@ for f=1:F
         Gs=sigs*A(:,:,f)'/(sigx(:,:,f,n));
         Gc=sigc*A_ronde'/sigx(:,:,f,n);
         s(:,f,n)=Gs*x(:,f,n);
-        c(:,f,n)=Gc*x(:,f,n);
+        c(:,f,n)=Gc*x(:,f,n); 
+        % Rxx=Rxx+x(:,:,f) * x(:,:,f)'/N;
         Rxx=Rxx+x(:,f,n)*x(:,f,n)'/N;
         Rxs=Rxs+x(:,f,n)*s(:,f,n)'/N;
         Rss=Rss+(s(:,f,n)*s(:,f,n)'+sigs-Gs*A(:,:,f)*sigs)/N;
@@ -58,7 +60,9 @@ for f=1:F
     A_new(:,:,f)=temp;
     
     sigb_new(:,:,f)=diag(diag(Rxx-temp*Rxs'-Rxs*temp'+temp*Rss*temp'));
-    u_temp=squeeze(u(:,f,:));
+    %u2 = permute(u,[1,3,2]);
+    %u_temp = u2(:,:,f);
+    u_temp=permute(u(:,f,:),[1,3,2]);
     for k=1:K
         W_new(f,k)=sum(u_temp(k,:)./H(k,:))/N;
     end

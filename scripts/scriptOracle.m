@@ -24,7 +24,7 @@ J=3; % number of instrument
 I=2; % stereo
 K_partition=[5,5,5];
 betaparam=2;
-stop=0.5;
+stop=0.0005;
 %% Spectrogram
 X=spec_cube(fmix,1024,0.5);
 X=X(:,1:512,:); % On ne prend pas en compte les hte frequences
@@ -40,7 +40,7 @@ s=s(:,1:512,:);
 W=[];
 H=[];
 for j=1:J
-   [W_temp,H_temp]=nmf_initialization(squeeze(s(j,:,:)),betaparam,stop,K_partition(j)); 
+   [W_temp,H_temp]=nmf_initialization(abs(squeeze(s(j,:,:))),betaparam,stop,K_partition(j)); 
    W=[W W_temp];
    H=[H;H_temp];
 end

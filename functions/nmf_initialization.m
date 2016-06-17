@@ -14,14 +14,18 @@ H = rand(order, s2);
 Vdiff = 1;
 V_precedent=V;
 compteur=1;
-while (Vdiff > stop) && compteur<1000
+while (Vdiff > stop) && compteur<100
     compteur=compteur+1;
     H = H.*(W'*((W*H).^(betaparam-2).*V))./(W'*(W*H).^(betaparam-1));
     W = W.*(((W*H).^(betaparam-2).*V)*H')./((W*H).^(betaparam-1)*H');
-    
+    somme = sum(W);
+    W = bsxfun(@rdivide,W,somme);
+    H = bsxfun(@times,H,somme.');
     V_actuel = W*H;
     Vdiff = norm(V_actuel-V_precedent)
+    norme(compteur) = norm(V-W*H,'fro');
     V_precedent=V_actuel;
 end
+%plot(norme);
 end
 
