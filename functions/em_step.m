@@ -11,6 +11,11 @@ end
 K_cumsum = cumsum(K_partition);
 ind=[0 K_cumsum]; %indices des H_j et K_j
 K=sum(K_partition);
+matrice=zeros(J,K); % matrice pour calculer A_ronde
+for j=1:J
+   matrice(j,ind(j)+1:ind(j+1))=ones(1,K_partition(j)); 
+end
+
 s= zeros(J,F,N);
 c= zeros(K,F,N);
 A_new = zeros(size(A));
@@ -25,27 +30,29 @@ for f=1:F
     Rxx=zeros(I,I);
     Rxs=zeros(I,J);
     Rss=zeros(J,J);
-    
+    A_ronde=A(:,:,f)*matrice;   
     %% E step
     for n=1:N
               
         sigs=zeros(J);
-        A_ronde=zeros(I,K);      
+           
         for j=1:J
+            %          sigs(j,:)=W(f,ind(j)+1:ind(j+1)) * H(ind(j)+1:ind(j+1),:);
            sigs(j,j)=W(f,ind(j)+1:ind(j+1))*...
                H(ind(j)+1:ind(j+1),n);
-           
-           A_ronde(:,ind(j)+1:ind(j+1))=A(:,j,f)*ones(1,K_partition(j));
         end
         sigx(:,:,f,n)=A(:,:,f)*sigs*A(:,:,f)'+sigb(:,:,f);
         sigc=(diag(W(f,:).*H(:,n).'));
-        Gs=sigs*A(:,:,f)'/(sigx(:,:,f,n));
+        Gs=sigs*A(:,:,f)'/(sigx(:,:,f,n)); % calculer avant l'inverse
         Gc=sigc*A_ronde'/sigx(:,:,f,n);
         s(:,f,n)=Gs*x(:,f,n);
-        c(:,f,n)=Gc*x(:,f,n);
+        c(:,f,n)=Gc*x(:,f,n); 
+        % Rxx=Rxx+x(:,:,f) * x(:,:,f)'/N;
         Rxx=Rxx+x(:,f,n)*x(:,f,n)'/N;
         Rxs=Rxs+x(:,f,n)*s(:,f,n)'/N;
         Rss=Rss+(s(:,f,n)*s(:,f,n)'+sigs-Gs*A(:,:,f)*sigs)/N;
+        % u(:,:,f)=abs(c(:,:,f)).^2 + sigc(:,:,f) ...
+        % - permute(sum(bsxfun(@times, Gc(:,:,:,f), A_ronde(:,:,f).'),2),[1,3,2]) .* sigc(:,:,f);
         u(:,f,n)=diag(c(:,f,n)*c(:,f,n)'+sigc-Gc*A_ronde*sigc);
 
     end
@@ -54,7 +61,9 @@ for f=1:F
     A_new(:,:,f)=temp;
     
     sigb_new(:,:,f)=diag(diag(Rxx-temp*Rxs'-Rxs*temp'+temp*Rss*temp'));
-    u_temp=squeeze(u(:,f,:));
+    %u2 = permute(u,[1,3,2]);
+    %u_temp = u2(:,:,f);
+    u_temp=permute(u(:,f,:),[1,3,2]);
     for k=1:K
         W_new(f,k)=sum(u_temp(k,:)./H(k,:))/N;
     end
