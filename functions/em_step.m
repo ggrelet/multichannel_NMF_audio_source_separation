@@ -37,7 +37,6 @@ for f=1:F
            
            A_ronde(:,ind(j)+1:ind(j+1))=A(:,j,f)*ones(1,K_partition(j));
         end
-        
         sigx(:,:,f,n)=A(:,:,f)*sigs*A(:,:,f)'+sigb(:,:,f);
         sigc=(diag(W(f,:).*H(:,n).'));
         Gs=sigs*A(:,:,f)'/(sigx(:,:,f,n));
