@@ -44,7 +44,7 @@ for f=1:F
         
         sigx(:,:,f,n)=A(:,:,f)*sigs*A(:,:,f)'+sigb(:,:,f);
         sigc=(diag(W(f,:).*H(:,n).'));
-        Gs=sigs*A(:,:,f)'/(sigx(:,:,f,n));
+        Gs=sigs*A(:,:,f)'/(sigx(:,:,f,n)); % calculer avant l'inverse
         Gc=sigc*A_ronde'/sigx(:,:,f,n);
         s(:,f,n)=Gs*x(:,f,n);
         c(:,f,n)=Gc*x(:,f,n); 
@@ -52,6 +52,8 @@ for f=1:F
         Rxx=Rxx+x(:,f,n)*x(:,f,n)'/N;
         Rxs=Rxs+x(:,f,n)*s(:,f,n)'/N;
         Rss=Rss+(s(:,f,n)*s(:,f,n)'+sigs-Gs*A(:,:,f)*sigs)/N;
+        % u(:,:,f)=abs(c(:,:,f)).^2 + sigc(:,:,f) ...
+        % - permute(sum(bsxfun(@times, Gc(:,:,:,f), A_ronde(:,:,f).'),2),[1,3,2]) .* sigc(:,:,f);
         u(:,f,n)=diag(c(:,f,n)*c(:,f,n)'+sigc-Gc*A_ronde*sigc);
 
     end
