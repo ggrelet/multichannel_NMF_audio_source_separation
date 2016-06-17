@@ -28,32 +28,40 @@ sigx=zeros(I,I,F,N);
 for f=1:F
    %% E Step
    % Rxx=zeros(I,I);
+    Gc=zeros(K,I,N);
     Rss=zeros(J,J);
     A_ronde=A(:,:,f)*matrice;   
     sigs_n=zeros(J,N); % Matrice diagonale, on ne stocke que la diagonale
+    sigc_n=zeros(K,N);
     for j=1:J
         sigs_n(j,:)=W(f,ind(j)+1:ind(j+1)) * H(ind(j)+1:ind(j+1),:);
     end
     for n=1:N
         sigx(:,:,f,n)=A(:,:,f)*diag(sigs_n(:,n))*A(:,:,f)'+sigb(:,:,f);
-        sigc=(diag(W(f,:).*H(:,n).'));
+        sigc_n(:,n)=W(f,:).*H(:,n).'; % matrice diag on ne garde que la diag
         Gs=diag(sigs_n(:,n))*A(:,:,f)'/(sigx(:,:,f,n)); % calculer avant l'inverse
-        Gc=sigc*A_ronde'/sigx(:,:,f,n);
+        Gc(:,:,n)=diag(sigc_n(:,n))*A_ronde'/sigx(:,:,f,n);
         s(:,f,n)=Gs*x(:,f,n);
-        c(:,f,n)=Gc*x(:,f,n); 
+        c(:,f,n)=Gc(:,:,n)*x(:,f,n); 
         Rss=Rss+(s(:,f,n)*s(:,f,n)'+diag(sigs_n(:,n))-Gs*A(:,:,f)*diag(sigs_n(:,n)))/N;
-        % u(:,:,f)=abs(c(:,:,f)).^2 + sigc(:,:,f) ...
-        % - permute(sum(bsxfun(@times, Gc(:,:,:,f), A_ronde(:,:,f).'),2),[1,3,2]) .* sigc(:,:,f);
-        u(:,f,n)=diag(c(:,f,n)*c(:,f,n)'+sigc-Gc*A_ronde*sigc);
+        % 
+        %u(:,f,n)=diag(c(:,f,n)*c(:,f,n)'+sigc-Gc*A_ronde*sigc);
 
     end
     
     x=permute(x,[1 3 2]);
     s=permute(s,[1 3 2]);
+    u=permute(u,[1 3 2]);
+    c=permute(c,[1 3 2]);
+    u(:,:,f)=abs(c(:,:,f)).^2 + sigc_n(:,:) ...
+         - permute(sum(bsxfun(@times, Gc, A_ronde(:,:).'),2),[1,3,2]) ...
+         .* sigc_n(:,:);
     Rxx=x(:,:,f)*x(:,:,f)'/N;
     Rxs=x(:,:,f)*s(:,:,f)'/N;
     x=permute(x,[1 3 2]);
     s=permute(s,[1 3 2]);
+    u=permute(u,[1 3 2]);
+    c=permute(c,[1 3 2]);
     %% Mstep
     temp=Rxs/Rss;
     A_new(:,:,f)=temp;
@@ -68,7 +76,7 @@ for f=1:F
     
 end
 for k=1:K
-    u_temp=squeeze(u(k,:,:));
+    u_temp=permute(u(k,:,:),[2,3,1]);
     for n=1:N
         H_new(k,n)=sum(u_temp(:,n)./W_new(:,k))/F;
     end
