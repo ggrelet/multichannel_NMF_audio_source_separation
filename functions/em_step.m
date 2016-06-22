@@ -36,6 +36,7 @@ for f=1:F
     for j=1:J
         sigs_n(j,:)=W(f,ind(j)+1:ind(j+1)) * H(ind(j)+1:ind(j+1),:);
     end
+    
     for n=1:N
         sigx(:,:,f,n)=A(:,:,f)*diag(sigs_n(:,n))*A(:,:,f)'+sigb(:,:,f);
         sigc_n(:,n)=W(f,:).*H(:,n).'; % matrice diag on ne garde que la diag
