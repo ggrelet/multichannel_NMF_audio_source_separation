@@ -22,8 +22,7 @@ while (Vdiff > stop) && compteur<100
     W = bsxfun(@rdivide,W,somme);
     H = bsxfun(@times,H,somme.');
     V_actuel = W*H;
-    Vdiff = norm(V_actuel-V_precedent)
-    norme(compteur) = norm(V-W*H,'fro');
+    Vdiff = norm(V_actuel-V_precedent);
     V_precedent=V_actuel;
 end
 %plot(norme);

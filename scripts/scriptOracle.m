@@ -30,7 +30,7 @@ X=spec_cube(fmix,1024,0.5);
 X=X(:,1:512,:); % On ne prend pas en compte les hte frequences
 F=size(X,2);
 N=size(X,3);
-s=zeros(J,2*F,N); % 2*F car on va tronquer après
+s=zeros(J,2*F,N); % 2*F car on va tronquer aprï¿½s
 s(1,:,:)=spec(piano,1024,0.5);
 s(2,:,:)=spec(drum,1024,0.5);
 s(3,:,:)=spec(voice,1024,0.5);
@@ -51,11 +51,17 @@ end
 
 
 %% Algo sur critÃ¨re d'arret 
-[A_est, W_est, H_est, s_est, sigb] = em_step(X, A, W, H, sigb, K_partition);
-pause()
-% arret = 1;
-% while(arret)
-%     s_temp = s(1,:,:) + s(2,:,:) + s(3,:,:);
-%     [A_est, W_est, H_est, s_est, sigb] = em_step(x, A, W, H, sigb, K_partition);
-%     arret = norm(abs(s_step- ( s(1,:,:) + s(2,:,:) + s(3,:,:)))) > 10^-7;
-% end
+nbIter=100;
+re=zeros(1,nbIter);
+im=re;
+for i=1:nbIter
+    i
+   [A_new,W_new,H_new,signal_estime,sigb_new,criterion]=em_step(X,A,W,H,sigb,K_partition);
+   A=A_new;
+   W=W_new;
+   H=H_new;
+   re(i)=real(criterion);
+   im(i)=imag(criterion);
+   sigb=sigb_new;
+end
+save signal_estime
