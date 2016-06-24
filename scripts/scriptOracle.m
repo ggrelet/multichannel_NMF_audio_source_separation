@@ -64,4 +64,6 @@ for i=1:nbIter
    im(i)=imag(criterion);
    sigb=sigb_new;
 end
-save signal_estime
+
+%% Enregistrement
+save('signal_estime.mat','signal_estime')
