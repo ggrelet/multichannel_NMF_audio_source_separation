@@ -55,7 +55,11 @@ end
 bruit=sig_bruit*randn(size(A));
 %A=A+bruit;
 %% Algo sur critère d'arret 
+<<<<<<< HEAD
 nbIter=1000;
+=======
+nbIter=1;
+>>>>>>> 797e7041b0e1b07632b0450f000f9f4d169491f7
 re=zeros(1,nbIter);
 im=re;
 for i=1:nbIter
@@ -70,4 +74,8 @@ for i=1:nbIter
 end
 
 %% Enregistrement
+<<<<<<< HEAD
 save('signal_estime_100iter_1024freq.mat','signal_estime')
+=======
+save('signal_estime_1_iteration.mat','signal_estime')
+>>>>>>> 797e7041b0e1b07632b0450f000f9f4d169491f7
