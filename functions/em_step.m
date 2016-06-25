@@ -38,8 +38,7 @@ for f=1:F
            
         for j=1:J
             %          sigs(j,:)=W(f,ind(j)+1:ind(j+1)) * H(ind(j)+1:ind(j+1),:);
-           sigs(j,j)=W(f,ind(j)+1:ind(j+1))*...
-               H(ind(j)+1:ind(j+1),n);
+           sigs(j,j)=W(f,ind(j)+1:ind(j+1))*H(ind(j)+1:ind(j+1),n);
         end
         sigx(:,:,f,n)=A(:,:,f)*sigs*A(:,:,f)'+sigb(:,:,f);
         sigc=(diag(W(f,:).*H(:,n).'));
@@ -100,10 +99,10 @@ end
 
 %% Calcul du critere v
 v=0;
-for n=1:N
-    for f=1:F
-        v=v+trace((x(:,f,n)*x(:,f,n)')/sigx(:,:,f,n))+log((det(sigx(:,:,f,n))));
-    end
-end
+% for n=1:N
+%     for f=1:F
+%         v=v+trace((x(:,f,n)*x(:,f,n)')/sigx(:,:,f,n))+log((det(sigx(:,:,f,n))));
+%     end
+% end
 criterion=v;
 end
