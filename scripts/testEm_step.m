@@ -13,10 +13,11 @@ J=3; % Nombre de sources
 K_partition=[5 4 5];
 K=sum(K_partition);
 x=randn(I,F,N); % Spectrogramme du signal
-A=randn(I,J,F); % Filtre qui fait le mixage
 
-W=rand(F,K); % Les matrices doivent être positives pour que l'algorithme fonctionne
-H=rand(K,N); 
+A = randn(I,J,F); % Filtre qui fait le mixage
+
+W = rand(F,K); % Les matrices doivent être positives pour que l'algorithme fonctionne
+H = rand(K,N); 
 
 sigb=zeros(I,I,F);
 for f=1:F

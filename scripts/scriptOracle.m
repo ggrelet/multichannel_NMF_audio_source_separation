@@ -7,6 +7,7 @@ close all
 [piano, Fp] = audioread('sources/piano.wav');
 [voice, Fv] = audioread('sources/voice.wav');
 load('sources/mixing_filters_ozerov.mat');
+
 drum=drum(1:2*Fd,1); % 2 premieres secondes
 piano=piano(1:2*Fp,1); % idem
 voice=voice(1:2*Fv,1); % 2 premieres secondes
