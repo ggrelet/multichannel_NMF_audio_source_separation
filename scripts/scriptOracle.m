@@ -24,18 +24,20 @@ fmix = piano_mixed + drum_mixed + voice_mixed; % convolutive mixture
 J=3; % number of instrument
 I=2; % stereo
 K_partition=[5,5,5];
+K=sum(K_partition);
 betaparam=2;
 stop=0.0005;
+sig_bruit=0.1;
 %% Spectrogram
 X=spec_cube(fmix,1024,0.5);
-X=X(:,1:512,:); % On ne prend pas en compte les hte frequences
+%X=X(:,1:512,:); % On ne prend pas en compte les hte frequences
 F=size(X,2);
 N=size(X,3);
-s=zeros(J,2*F,N); % 2*F car on va tronquer apr�s
+s=zeros(J,F,N); % 2*F car on va tronquer apr�s
 s(1,:,:)=spec(piano,1024,0.5);
 s(2,:,:)=spec(drum,1024,0.5);
 s(3,:,:)=spec(voice,1024,0.5);
-s=s(:,1:512,:);
+%s=s(:,1:512,:);
 
 %% Initialisation de l'algo
 W=[];
@@ -45,14 +47,20 @@ for j=1:J
    W=[W W_temp];
    H=[H;H_temp];
 end
+%W=W+sig_bruit*rand(F,K);
+%H=H+sig_bruit*rand(K,N);
 sigb=zeros(I,I,F);
 for f=1:F
     sigb(:,:,f)=0.001*eye(I);    
 end
-
-
+bruit=sig_bruit*randn(size(A));
+%A=A+bruit;
 %% Algo sur critère d'arret 
+<<<<<<< HEAD
+nbIter=1000;
+=======
 nbIter=1;
+>>>>>>> 797e7041b0e1b07632b0450f000f9f4d169491f7
 re=zeros(1,nbIter);
 im=re;
 for i=1:nbIter
@@ -67,4 +75,8 @@ for i=1:nbIter
 end
 
 %% Enregistrement
+<<<<<<< HEAD
+save('signal_estime_100iter_1024freq.mat','signal_estime')
+=======
 save('signal_estime_1_iteration.mat','signal_estime')
+>>>>>>> 797e7041b0e1b07632b0450f000f9f4d169491f7
