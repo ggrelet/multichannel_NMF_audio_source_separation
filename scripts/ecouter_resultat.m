@@ -1,7 +1,10 @@
-load('/Users/guillaumegrelet/SIGMA205/functions/signal_estime.mat', 'signal_estime')
+load('signal_estime_1000iter.mat', 'signal_estime')
 
+for k = 1:3
+    
+    A = squeeze(signal_estime(k , :, :));
+    B = ispec(A, 512);
 
-A = squeeze(signal_estime(3, :, :));
-B = ispec(A, 512);
-
-soundsc(real(B))
+    soundsc(real(B));
+    pause(4);
+end

@@ -51,7 +51,7 @@ end
 
 
 %% Algo sur critère d'arret 
-nbIter=100;
+nbIter=1;
 re=zeros(1,nbIter);
 im=re;
 for i=1:nbIter
@@ -66,4 +66,4 @@ for i=1:nbIter
 end
 
 %% Enregistrement
-save('signal_estime.mat','signal_estime')
+save('signal_estime_1_iteration.mat','signal_estime')
