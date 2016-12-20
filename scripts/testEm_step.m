@@ -6,16 +6,16 @@
 % l'algorithme à proprement parler.
 %% Parametres
 
-I=2; % Nombre de chaines
+I=2; % Chaine number
 F=16;
-N=50; % Nombre de points et donc d'itérations de l'algorithmes
-J=3; % Nombre de sources
+N=50; % Number of points and iteration
+J=3; % Nomber of sources
 K_partition=[5 4 5];
 K=sum(K_partition);
-x=randn(I,F,N); % Spectrogramme du signal
-A=randn(I,J,F); % Filtre qui fait le mixage
+x=randn(I,F,N); % Signal spectrogram
+A=randn(I,J,F); % Mixing filter
 
-W=rand(F,K); % Les matrices doivent être positives pour que l'algorithme fonctionne
+W=rand(F,K); % Positive matrix in order for the algorithm to work
 H=rand(K,N); 
 
 sigb=zeros(I,I,F);

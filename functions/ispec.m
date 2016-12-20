@@ -1,23 +1,17 @@
 function [vector] = ispec(X, window_length)
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+%ispec fonction spectrogramme inverse
 
-vector = [];
+	vector = [];
 
-w = zeros(window_length, 1);
-for k=1:window_length
-    w(k) = sin((pi * k)/(window_length - 1)); % Sine-window calculation
+	w = zeros(window_length, 1);
+	for k=1:window_length
+	    w(k) = sin((pi * k)/(window_length - 1)); % Sine-window calculation
+	end
+
+	for k = 1:2:size(X, 2)
+	  
+	    A = ifft(X(:, k));
+	    A = A./w;
+	    vector = [vector ; A];
+	end
 end
-
-for k = 1:2:size(X, 2)
-  
-    A = ifft(X(:, k));
-    A = A./w;
-    vector = [vector ; A];
-    
-end
-
-
-
-end
-

@@ -28,16 +28,16 @@ stop=0.01;
 
 %% Spectrogram
 X=spec_cube(fmix,1024,0.5);
-X=X(:,1:512,:); % On ne prend pas en compte les hte frequences
+X=X(:,1:512,:); % High frequencies aren't kept
 F=size(X,2);
 N=size(X,3);
-s=zeros(J,2*F,N); % 2*F car on va tronquer apr�s
+s=zeros(J,2*F,N); % 2*F
 s(1,:,:)=spec(piano,1024,0.5);
 s(2,:,:)=spec(drum,1024,0.5);
 s(3,:,:)=spec(voice,1024,0.5);
 s=s(:,1:512,:);
 
-%% Initialisation de l'algo
+%% Algorithm initialization
 W=[];
 H=[];
 for j=1:J
@@ -53,7 +53,7 @@ A_def=A;
 W_def=W;
 H_def=H;
 
-%% Algo sur critère d'arret 
+%% Stop criteria algorithm
 
 nbIter=10;
 re=zeros(nbIter,1);
